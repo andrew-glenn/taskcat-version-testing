@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 with open('VERSION') as f:
-    version = f.read().splitlines()
+    version = f.read()
 
 def test_suite():
     test_loader = unittest.TestLoader()
@@ -23,7 +23,7 @@ setup(
     url='https://aws-quickstart.github.io/taskcat/',
     license='Apache License 2.0',
     download_url='https://github.com/aws-quickstart/taskcat/tarball/master',
-    version = version,
+    version = version,,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
