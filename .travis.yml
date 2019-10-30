@@ -13,21 +13,19 @@ language: python
 branches:
   only:
   - master
-  - develop
-  - /^release.*$/
 
 python:
 - 3.5
 - 3.6
 
-before_install:
-- pip install bump2version
-
-install:
-- python setup.py install
-
-before_script:
-- pytest
+# before_install:
+# - pip install bump2version
+#
+# install:
+# - python setup.py install
+#
+# before_script:
+# - pytest
 
 script:
 - echo "Finish Unittests"
