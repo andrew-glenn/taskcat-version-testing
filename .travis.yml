@@ -65,13 +65,13 @@ jobs:
       - bumpversion --no-commit --allow-dirty --no-tag patch
       - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version - Creating a new minor version"
       - export NEW_VERSION=$(cat VERSION)
-      - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}"
+      - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" || travis_terminate 1
       - |
-        if [ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]; then
+        if [[ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]]; then
           echo 'Opening a new PR!'
           hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
         fi
-      - echo "Done..."
+      - travis_terminate 0
 
   - stage: "[Ver Bump] Create PyPI Development release"
     name: "[Ver Bump] Create PyPI Development release"
