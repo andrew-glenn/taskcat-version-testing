@@ -52,12 +52,7 @@ jobs:
       curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
     - mkdir -p ~/.config/taskcat
     - |
-      cat > ~/.config/hub << EOL
-      github.com:
-      - user: andrew-glenn
-        oauth_token: $GHT
-        protocol: https
-      EOL
+      echo -e "github.com:\n- user: andrew-glenn\n  oauth_token: ${GHT}\n  protocol: https" > ~/.config/hub
     - cat ~/.config/hub
     script:
       - set -x
