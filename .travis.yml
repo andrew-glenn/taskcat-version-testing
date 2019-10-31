@@ -13,14 +13,6 @@ language: python
 branches:
   only:
   - master
-
-python:
-- 3.5
-- 3.6
-
-before_install:
-- pip install bump2version
-
 #
 # install:
 # - python setup.py install
@@ -73,16 +65,17 @@ jobs:
     name: "[Ver Bump] Create PyPI Development release"
     if: branch = master AND commit_message !~ /(Bump)/
     before_script:
+      - pip install bump2version
       - export TEST_PYPI_VERSION=$(python -c "import requests; version = requests.get('https://test.pypi.org/pypi/taskcat/json').json()['info']['version'];print(version)")
       - export TEST_PYPI_RELEASE_ID=$(echo ${TEST_PYPI_VERSION} | cut -f1-2 -d .)
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
     script:
       - |
         if [[ "${RELEASE_ID}" != "${TEST_PYPI_RELEASE_ID}" ]]; then
-          export TEST_PYPI_NEW_VERSION="$(cat VERSION)-dev0-${TRAVIS_COMMIT:0:8}"
+          export TEST_PYPI_NEW_VERSION="$(cat VERSION)-dev0-${TRAVIS_COMMIT:0:7}"
         else
           BUMPVERSION_STUB=$(bumpversion --dry-run --current-version ${TEST_PYPI_VERSION} build --list | egrep -i 'new_version' | sed -e 's/new_version=//g')
-          export TEST_PYPI_NEW_VERSION="${BUMPVERSION_STUB}-${TRAVIS_COMMIT:0:8}"
+          export TEST_PYPI_NEW_VERSION="${BUMPVERSION_STUB}-${TRAVIS_COMMIT:0:7}"
         fi
       - echo "${TEST_PYPI_NEW_VERSION}" > VERSION
       - cat VERSION
@@ -104,7 +97,7 @@ jobs:
 
   - stage: "Tag next release & include changelog"
     name: "Tag next release & include changelog"
-    if: branch = master AND commit_message =~ /(Bump)/ AND sender == travis-ci
+    if: branch = master AND commit_message =~ /(Bump)/ AND sender == andrew-glenn
     script:
       - |
         LAST_RELEASE_COMMIT=$(git rev-list --tags --max-count=1)
@@ -119,18 +112,18 @@ jobs:
         on:
           branch: master
 
-  - stage: "Build Production PyPI and Production Docker"
-    name: "Build Production PyPI and Production Docker"
-    if: branch = master AND commit_message =~ /(Bump)/ AND sender == travis-ci
-    script:
-      - |
-        LAST_RELEASE_COMMIT=$(git rev-list --tags --max-count=1)
-        TAG_BODY=$(git --no-pager log --no-merges --oneline ${LAST_RELEASE_COMMIT}..HEAD  --pretty='- %h %s')
-        git tag -a "$(cat VERSION)" -m "${TAG_BODY}"
-        git push --tags "https://$GHT:@github.com/$TRAVIS_REPO_SLUG"
-    # deploy:
-    #   - provider: pypi
-    #     user: $PYPI_USER
-    #     password: $PYPI_PASSWORD
-    #     on:
-    #       branch: master
+  # - stage: "Build Production PyPI and Production Docker"
+  #   name: "Build Production PyPI and Production Docker"
+  #   if: branch = master AND commit_message =~ /(Bump)/ AND sender == andrew-glenn
+  #   script:
+  #     - |
+  #       LAST_RELEASE_COMMIT=$(git rev-list --tags --max-count=1)
+  #       TAG_BODY=$(git --no-pager log --no-merges --oneline ${LAST_RELEASE_COMMIT}..HEAD  --pretty='- %h %s')
+  #       git tag -a "$(cat VERSION)" -m "${TAG_BODY}"
+  #       git push --tags "https://$GHT:@github.com/$TRAVIS_REPO_SLUG"
+  #   # deploy:
+  #   #   - provider: pypi
+  #   #     user: $PYPI_USER
+  #   #     password: $PYPI_PASSWORD
+  #   #     on:
+  #   #       branch: master
