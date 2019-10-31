@@ -60,8 +60,10 @@ jobs:
       - |
         OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
         if [ "${OPEN_PR}a" == "a" ]; then
-          hub pull-request -m "Release taskcat [$NEW_VERSION]"  -h "release/v${RELEASE_ID}"
+          hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
         fi
+    after_script:
+      - echo "Complete!"
 
   - stage: "[Ver Bump] Create PyPI Development release"
     name: "[Ver Bump] Create PyPI Development release"
