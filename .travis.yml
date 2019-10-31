@@ -59,7 +59,6 @@ jobs:
           protocol: https
         EOL
     script:
-      - set -x
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
       - export ORIGINAL_VERSION=$(cat VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
