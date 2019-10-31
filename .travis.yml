@@ -45,20 +45,20 @@ jobs:
     name: "[Ver Bump] Check/Create Release PR"
     if: branch = master AND commit_message !~ /(Bump)/
     before_script:
-      - |
-        pip install bump2version
-        HUB_DIST=linux-amd64
-        HUB_VERSION=$(curl -w "%{url_effective}\n" -I -L -s -S github.com/github/hub/releases/latest -o /dev/null | awk -F'releases/tag/v' '{ print $2 }')
-        curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
-      - mkdir -p ~/.config/taskcat
-      - |
-        cat > ~/.config/hub <<EOL
-        github.com:
-        - user: andrew-glenn
-          oauth_token: $GHT
-          protocol: https
-        EOL
-      - cat ~/.config/hub
+    - |
+      pip install bump2version
+      HUB_DIST=linux-amd64
+      HUB_VERSION=$(curl -w "%{url_effective}\n" -I -L -s -S github.com/github/hub/releases/latest -o /dev/null | awk -F'releases/tag/v' '{ print $2 }')
+      curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
+    - mkdir -p ~/.config/taskcat
+    - |
+      cat > ~/.config/hub << EOL
+      github.com:
+      - user: andrew-glenn
+        oauth_token: $GHT
+        protocol: https
+      EOL
+    - cat ~/.config/hub
     script:
       - set -x
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
