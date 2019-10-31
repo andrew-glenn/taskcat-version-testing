@@ -62,14 +62,12 @@ jobs:
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
       - export ORIGINAL_VERSION=$(cat VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
-      - git pull
       - bumpversion --no-commit --allow-dirty --no-tag patch
       - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version - Creating a new minor version"
       - export NEW_VERSION=$(cat VERSION)
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}"
-      - OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
       - |
-        if [ -z ${OPEN_PR} ]; then
+        if [ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]; then
           echo 'Opening a new PR!'
           hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
         fi
