@@ -68,7 +68,8 @@ jobs:
       - export NEW_VERSION=$(cat VERSION)
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" || travis_terminate 1
       - |
-          if [[ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]]; then
+          OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
+          if [ -z "${OPEN_PR}" ]; then
             hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
           fi
       - travis_terminate 0
