@@ -53,7 +53,7 @@ jobs:
       - bumpversion --no-commit --allow-dirty --no-tag patch
       - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version - Creating a new minor version"
       - export NEW_VERSION=$(cat VERSION)
-      - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" || travis_terminate 1
+      - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" --force || travis_terminate 1
       - |
           OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
           if [ -z "${OPEN_PR}" ]; then
