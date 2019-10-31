@@ -44,10 +44,16 @@ jobs:
   - stage: "[Ver Bump] Check/Create Release PR"
     name: "[Ver Bump] Check/Create Release PR"
     if: branch = master AND commit_message !~ /(Bump)/
+    before_install:
+      - |
+      HUB_DIST=linux-amd64
+      HUB_VERSION=$(curl -w "%{url_effective}\n" -I -L -s -S github.com/github/hub/releases/latest -o /dev/null | awk -F'releases/tag/v' '{ print $2 }')
+      curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
     script:
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
-      - bumpversion --commit --allow-dirty --no-tag patch
+      - bumpversion --no-commit --allow-dirty --no-tag patch
+      - bumpversion --commit --allow-dirty --no-tag release
       - export NEW_VERSION=$(cat VERSION)
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}"
       - |
