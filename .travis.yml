@@ -55,7 +55,7 @@ jobs:
       - export ORIGINAL_VERSION=$(cat VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
       - bumpversion --no-commit --allow-dirty --no-tag patch
-      - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version: Creating a new minor version"
+      - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version - Creating a new minor version"
       - export NEW_VERSION=$(cat VERSION)
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}"
       - |
