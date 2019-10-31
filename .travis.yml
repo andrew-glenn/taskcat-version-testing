@@ -35,7 +35,7 @@ jobs:
 
   - stage: "[Ver Bump] Check/Create Release PR"
     name: "[Ver Bump] Check/Create Release PR"
-    if: branch = master AND commit_message !~ /(Bump)/
+    if: branch = master AND commit_message !~ /(Bump|Release taskcat)/
     before_script:
     - |
       pip install bump2version
@@ -63,7 +63,7 @@ jobs:
 
   - stage: "[Ver Bump] Create PyPI Development release"
     name: "[Ver Bump] Create PyPI Development release"
-    if: branch = master AND commit_message !~ /(Bump)/
+    if: branch = master AND commit_message !~ /(Bump|Release taskcat)/
     before_script:
       - pip install bump2version
       - export TEST_PYPI_VERSION=$(python -c "import requests; version = requests.get('https://test.pypi.org/pypi/taskcat/json').json()['info']['version'];print(version)")
@@ -97,7 +97,7 @@ jobs:
 
   - stage: "Tag next release & include changelog"
     name: "Tag next release & include changelog"
-    if: branch = master AND commit_message =~ /(Bump)/ AND sender == andrew-glenn
+    if: branch = master AND commit_message =~ /(Release taskcat)/ AND sender == andrew-glenn
     script:
       - |
         LAST_RELEASE_COMMIT=$(git rev-list --tags --max-count=1)
@@ -114,7 +114,7 @@ jobs:
 
   # - stage: "Build Production PyPI and Production Docker"
   #   name: "Build Production PyPI and Production Docker"
-  #   if: branch = master AND commit_message =~ /(Bump)/ AND sender == andrew-glenn
+  #   if: branch = master AND commit_message =~ /(Release taskcat)/ AND sender == andrew-glenn
   #   script:
   #     - |
   #       LAST_RELEASE_COMMIT=$(git rev-list --tags --max-count=1)
