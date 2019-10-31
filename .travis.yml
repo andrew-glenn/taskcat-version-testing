@@ -46,9 +46,9 @@ jobs:
     if: branch = master AND commit_message !~ /(Bump)/
     before_install:
       - |
-      HUB_DIST=linux-amd64
-      HUB_VERSION=$(curl -w "%{url_effective}\n" -I -L -s -S github.com/github/hub/releases/latest -o /dev/null | awk -F'releases/tag/v' '{ print $2 }')
-      curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
+        HUB_DIST=linux-amd64
+        HUB_VERSION=$(curl -w "%{url_effective}\n" -I -L -s -S github.com/github/hub/releases/latest -o /dev/null | awk -F'releases/tag/v' '{ print $2 }')
+        curl "https://github.com/github/hub/releases/download/v${HUB_VERSION}/hub-${HUB_DIST}-${HUB_VERSION}.tgz" -L | tar xvz && sudo ./hub-${HUB_DIST}-${HUB_VERSION}/install && rm -r ./hub-${HUB_DIST}-${HUB_VERSION}
     script:
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
@@ -78,16 +78,16 @@ jobs:
           export TEST_PYPI_NEW_VERSION="${BUMPVERSION_STUB}-${TRAVIS_COMMIT:0:8}"
         fi
       - echo "${TEST_PYPI_NEW_VERSION}" > VERSION
-    deploy:
-      - provider: pypi
-        user: $PYPI_USER
-        password: $PYPI_PASSWORD
-        server: https://test.pypi.org/legacy/
-        if: fork = false
-        on:
-          branch: master
-    after_deploy:
-      - echo "Deployment complete"
+    # deploy:
+    #   - provider: pypi
+    #     user: $PYPI_USER
+    #     password: $PYPI_PASSWORD
+    #     server: https://test.pypi.org/legacy/
+    #     if: fork = false
+    #     on:
+    #       branch: master
+    # after_deploy:
+    #   - echo "Deployment complete"
 
   # DOCUMENTATION JOB GOES HERE
   # - stage: "Build documentation"
@@ -119,9 +119,9 @@ jobs:
         TAG_BODY=$(git --no-pager log --no-merges --oneline ${LAST_RELEASE_COMMIT}..HEAD  --pretty='- %h %s')
         git tag -a "$(cat VERSION)" -m "${TAG_BODY}"
         git push --tags "https://$GHT:@github.com/$TRAVIS_REPO_SLUG"
-    deploy:
-      - provider: pypi
-        user: $PYPI_USER
-        password: $PYPI_PASSWORD
-        on:
-          branch: master
+    # deploy:
+    #   - provider: pypi
+    #     user: $PYPI_USER
+    #     password: $PYPI_PASSWORD
+    #     on:
+    #       branch: master
