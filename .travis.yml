@@ -58,6 +58,7 @@ jobs:
           oauth_token: $GHT
           protocol: https
         EOL
+      - cat ~/.config/hub
     script:
       - set -x
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
@@ -69,6 +70,7 @@ jobs:
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" || travis_terminate 1
       - |
           echo "OPEN_PR=\$(hub pr list -s open --base master --head \"release/v${RELEASE_ID}\" -L 1 -f \"%I\")"
+          OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
           OPEN_PR=$(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I")
           travis_terminate 1
           if [ -z "${OPEN_PR}" ]; then
