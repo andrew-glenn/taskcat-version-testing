@@ -44,7 +44,7 @@ jobs:
   - stage: "[Ver Bump] Check/Create Release PR"
     name: "[Ver Bump] Check/Create Release PR"
     if: branch = master AND commit_message !~ /(Bump)/
-    before_install:
+    before_script:
       - |
         pip install bump2version
         HUB_DIST=linux-amd64
