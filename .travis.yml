@@ -59,6 +59,7 @@ jobs:
           protocol: https
         EOL
     script:
+      - set -x
       - export RELEASE_ID=$(cut -f1-2 -d . VERSION)
       - export ORIGINAL_VERSION=$(cat VERSION)
       - git checkout "release/v${RELEASE_ID}" ||  git checkout -b "release/v${RELEASE_ID}"
@@ -66,7 +67,10 @@ jobs:
       - bumpversion --commit --allow-dirty --no-tag release --message "Bump Version - Creating a new minor version"
       - export NEW_VERSION=$(cat VERSION)
       - git push "https://${GHT}:@github.com/${TRAVIS_REPO_SLUG}" "release/v${RELEASE_ID}" || travis_terminate 1
-      - [[ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]] && hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
+      - |
+          if [[ $(hub pr list -s open --base master --head "release/v${RELEASE_ID}" -L 1 -f "%I") ]]; then
+            hub pull-request -m "Release taskcat [${NEW_VERSION}]"  -h "release/v${RELEASE_ID}"
+          fi
       - travis_terminate 0
 
   - stage: "[Ver Bump] Create PyPI Development release"
