@@ -22,6 +22,8 @@ branches:
 
 script:
 - echo "Finish Unittests"
+- echo "Travis Branch: $TRAVIS_BRANCH"
+- echo "Travis PR Branch: $TRAVIS_PULL_REQUEST_BRANCH"
 jobs:
   include:
   # - stage: "Functional test"
